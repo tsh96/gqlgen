@@ -42,10 +42,12 @@ To automatically add the dependency to your `go.mod` run
 go mod tidy
 ```
 
-If you want to specify a particular version of gqlgen, you can use `go get`. For example
+By default you'll be using the latest version of gqlgen, but if you want to specify a particular version you can use `go get` (replacing `VERSION` with the particular version desired)
 ```shell
-go get -d github.com/99designs/gqlgen@v0.14.0
+go get -d github.com/99designs/gqlgen@VERSION
 ```
+
+
 
 ## Building the server
 
@@ -199,7 +201,7 @@ type Todo struct {
 	ID     string `json:"id"`
 	Text   string `json:"text"`
 	Done   bool   `json:"done"`
-	UserID string `json:"user"`
+	User   *User  `json:"user"`
 }
 ```
 
@@ -218,7 +220,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	todo := &model.Todo{
 		Text:   input.Text,
 		ID:     fmt.Sprintf("T%d", rand.Int()),
-		UserID: input.UserID, // fix this line
+		User:   &model.User{ID: input.UserID, Name: "user " + input.UserID},
 	}
 	r.todos = append(r.todos, todo)
 	return todo, nil
